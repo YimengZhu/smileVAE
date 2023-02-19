@@ -2,6 +2,7 @@ from torch import nn
 
 class AutoEncoder(nn.Module):
     def __init__(self, input_dim, hidden_dim, latent_dim):
+        super(AutoEncoder, self).__init__()
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -13,7 +14,7 @@ class AutoEncoder(nn.Module):
             nn.Linear(latent_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, input_dim),
-            nn.Sigmoid
+            nn.Sigmoid()
         )
 
     def forward(self, feature):
@@ -24,7 +25,8 @@ class AutoEncoder(nn.Module):
 
 class VariationalAutoEncoder(nn.Module):
     def __init__(self, input_dim, hidden_dim, latent_dim):
-    
+        super(VariationalAutoEncoder, self).__init__()
+
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -36,7 +38,7 @@ class VariationalAutoEncoder(nn.Module):
             nn.Linear(latent_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, input_dim),
-            nn.Sigmoid
+            nn.Sigmoid()
         )
 
     def forward(self, feature):

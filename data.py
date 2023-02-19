@@ -1,9 +1,10 @@
+import torch
 from torch.utils.data import Dataset
 
 SMILE = 3
-DENSITY = 6
-CALORICITY = 7
-MELTING = 8
+DENSITY = 5
+CALORICITY = 6
+MELTING = 7
 
 
 class Monecular(Dataset):
@@ -16,13 +17,13 @@ class Monecular(Dataset):
 
     def __getitem__(self, idx):
         sample = self.samples[idx].strip()
-        sample_columns = sample.split('\t')
+        sample = sample.split(',')
 
-        feature = sample_columns[SMILE]
+        feature = torch.tensor(sample[SMILE])
         
-        density = sample_columns[DENSITY]
-        caloricity = sample_columns[CALORICITY]
-        melting = sample_columns[MELTING]
+        density = torch.tensor(sample[DENSITY])
+        caloricity = torch.tensor(sample[CALORICITY])
+        melting = torch.tensor(sample[MELTING])
         
         return feature, (density, caloricity, melting)
 
