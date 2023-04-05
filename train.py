@@ -20,8 +20,8 @@ def train(model, data_loader, optimzizer, epochs):
 dataset = Monecular('sample_data.csv')
 train_loader = DataLoader(dataset)
 
-ae_model = AutoEncoder(260, 128, 32)
-vae_model = VariationalAutoEncoder(260, 128, 32)
+ae_model = AutoEncoder(12, 128, 5)
+vae_model = VariationalAutoEncoder(12, 128, 5)
 
 optimizer = torch.optim.SGD(ae_model.parameters(), lr=0.1, momentum=0.8)
 
