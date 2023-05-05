@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 class AutoEncoder(nn.Module):
@@ -46,8 +47,15 @@ class VariationalAutoEncoder(nn.Module):
         mean, var = torch.chunk(latent, 2, dim=-1)
 
         std = var.mul(0.5).exp_()
-        esp = torch.randn(*mu.size())
+        esp = torch.randn(*mean.size())
         latent_sample = mean + std * esp
 
         reconstruct= self.decoder(latent_sample)
-        return reconstruct, mean, var
+        return reconstruct
+
+
+def make_model(model_name):
+    if model_name == 'AE':
+        return AutoEncoder(12, 128, 5)
+    if model_name == 'VAE':
+        return VariationalAutoEncoder(12, 128, 5)
