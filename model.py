@@ -21,7 +21,7 @@ class AutoEncoder(nn.Module):
     def forward(self, feature):
         latent = self.encoder(feature)
         reconstruct = self.decoder(latent)
-        return reconstruct
+        return reconstruct, latent
 
 
 class VariationalAutoEncoder(nn.Module):
@@ -51,11 +51,11 @@ class VariationalAutoEncoder(nn.Module):
         latent_sample = mean + std * esp
 
         reconstruct= self.decoder(latent_sample)
-        return reconstruct
+        return reconstruct, latent
 
 
 def make_model(model_name):
     if model_name == 'AE':
-        return AutoEncoder(12, 128, 5)
+        return AutoEncoder(12, 32, 3)
     if model_name == 'VAE':
-        return VariationalAutoEncoder(12, 128, 5)
+        return VariationalAutoEncoder(12, 32, 3)

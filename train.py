@@ -8,13 +8,15 @@ from model import make_model
 def train(model, data_loader, optimzizer, epochs):
     criterion = torch.nn.MSELoss()
     for epoch in range(epochs):
+        loss_val = 0
         for i, (feature, _) in enumerate(train_loader):
-            prediction = model(feature)
+            prediction, _ = model(feature)
             loss = criterion(feature, prediction)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
+            loss_val += loss.item()
+        print(f'training loss for epoch {epoch} is {loss_val}')
     checkpoint = {'model': model.state_dict(), 'optimizer': optimizer.state_dict()}
     torch.save(checkpoint, 'model.pth.tar')
 
@@ -29,8 +31,8 @@ if __name__ == '__main__':
 
     model = make_model(args.model_type)
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.8)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.99)
 
-    epochs = 5
+    epochs = 100
 
     train(model, train_loader, optimizer, epochs)
