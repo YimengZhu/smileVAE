@@ -40,9 +40,11 @@ class Monecular(Dataset):
         padding = (0, 0, 0, self.max_length - len(char_list))
         feature = F.pad(feature, padding, value=-1)
 
-        density = torch.tensor(sample["DENSITY"])
-        caloricity = torch.tensor(sample["CALORICITY"])
-        melting = torch.tensor(sample["MELTING"])
+        density = (sample["DENSITY"] - 0.75) / 0.75
+        caloricity = (sample["CALORICITY"] - 25) / 25
+        melting = (sample["MELTING"] - 75) / 225
+
+        properties = torch.tensor([density, caloricity, melting]).float()
         
-        return feature, (density, caloricity, melting)
+        return feature, properties
 

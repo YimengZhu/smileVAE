@@ -5,18 +5,31 @@ from data import Monecular
 from model import make_model
 
 
-def train(model, data_loader, optimzizer, epochs):
+def train(model, data_loader, optimzizer, epochs, scheduler):
     criterion = torch.nn.MSELoss()
+
     for epoch in range(epochs):
         loss_val = 0
-        for i, (feature, _) in enumerate(train_loader):
-            prediction, _ = model(feature)
-            loss = criterion(feature, prediction)
+        for i, (feature, properties) in enumerate(train_loader):
+            pred_smile, pred_prop  = model(feature)
+
+            reconstruct_loss = criterion(feature, pred_smile)
+            ce_loss = criterion(properties, pred_prop)
+
+            loss = reconstruct_loss + ce_loss * 0
+            print('{}-th data, total loss: {}, ce loss: {}, reconstruct loss: {}'.format(
+                    i,
+                    loss.item(), 
+                    ce_loss.item(), 
+                    reconstruct_loss.item()
+                )
+            )
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             loss_val += loss.item()
         print(f'training loss for epoch {epoch} is {loss_val}')
+        scheduler.step()
     checkpoint = {'model': model.state_dict(), 'optimizer': optimizer.state_dict()}
     torch.save(checkpoint, 'model.pth.tar')
 
@@ -31,8 +44,9 @@ if __name__ == '__main__':
 
     model = make_model(args.model_type)
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.99)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    # scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.99)
 
-    epochs = 100
+    epochs = 500
 
-    train(model, train_loader, optimizer, epochs)
+    train(model, train_loader, optimizer, epochs, None)
