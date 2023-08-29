@@ -17,13 +17,7 @@ def train(model, data_loader, optimzizer, epochs, scheduler):
             ce_loss = criterion(properties, pred_prop)
 
             loss = reconstruct_loss + ce_loss * 0
-            print('{}-th data, total loss: {}, ce loss: {}, reconstruct loss: {}'.format(
-                    i,
-                    loss.item(), 
-                    ce_loss.item(), 
-                    reconstruct_loss.item()
-                )
-            )
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -45,8 +39,8 @@ if __name__ == '__main__':
     model = make_model(args.model_type)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
-    # scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.99)
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.99)
 
     epochs = 500
 
-    train(model, train_loader, optimizer, epochs, None)
+    train(model, train_loader, optimizer, epochs, scheduler)

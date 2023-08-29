@@ -55,20 +55,32 @@ class VariationalAutoEncoder(nn.Module):
             num_property
         )
 
-
-    def forward(self, feature):
-        latent = self.encoder(feature)
+    def __decode_latent(self, latent):
         mean, var = torch.chunk(latent, 2, dim=-1)
-
         std = var.mul(0.5).exp_()
         esp = torch.randn(*mean.size())
         latent_sample = mean + std * esp
 
         reconstruct= self.decoder(latent_sample)
-
         properties = self.property_predictor(latent_sample)
+
         return reconstruct, properties[:,-1,:]
 
+    def forward(self, feature):
+        latent = self.encoder(feature)
+
+        if self.training:
+            return self.__decode_latent(latent)
+
+        else:
+            reconstruct_list, properties_list = [], []
+            for i in range(5):
+                reconstruct. properties = self.__decode_latent(latent)
+
+                reconstruct_list.append(reconstruct)
+                properties_list.append(properties)
+            return reconstruct_list, properties_list
+   
 
 def make_model(model_name):
     if model_name == 'AE':
